@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\APIs;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\APIs\Post\StoreRequest;
 use App\Http\Requests\APIs\Post\UpdateRequest;
@@ -15,14 +16,15 @@ class PostController extends Controller
      */
     public function index()
     {
-        $data = Post::orderBy('created_at', 'desc')->paginate(10);
+        $data = Post::orderBy('created_at', 'desc')
+            ->paginate(10);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Posts fetched successfully.',
-            'data' => $data,
-        ]);
+        return ApiResponse::success(
+            'Posts fetched successfully.',
+            $data
+        );
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -44,39 +46,24 @@ class PostController extends Controller
 
         $post = Post::create($data);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Post created successfully!',
-            'data' => [
-                'id' => $post->id,
-                'title' => $post->title,
-                'description' => $post->description,
-                'image' => $post->image,
-            ],
-        ], 201);
+        return ApiResponse::success(
+            'Post created successfully!',
+            $post,
+            201
+        );
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Post $post)
     {
-        $data = Post::find($id);
-
-        if (!$data) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Post not found.',
-            ], 404);
-        }
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Post fetched successfully.',
-
-            'data' => $data,
-        ], 200);
+        return ApiResponse::success(
+            'Post fetched successfully.',
+            $post
+        );
     }
+
     /**
      * Update the specified resource in storage.
      */
@@ -105,11 +92,10 @@ class PostController extends Controller
 
         $post->update($data);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Post updated successfully!',
-            'data' => $post->fresh(),
-        ], 200);
+        return ApiResponse::success(
+            'Post updated successfully!',
+            $post->fresh()
+        );
     }
 
     /**
@@ -117,17 +103,14 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        // Delete image from storage
         if ($post->image) {
             Storage::disk('public')->delete($post->image);
         }
 
-        // Delete post
         $post->delete();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Post deleted successfully.',
-        ], 200);
+        return ApiResponse::success(
+            'Post deleted successfully.'
+        );
     }
 }

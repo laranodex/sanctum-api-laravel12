@@ -1,0 +1,107 @@
+body {
+    min-height: 100vh;
+    background: #f1f3f5;
+    font-family: Arial, sans-serif;
+}
+
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Glass Login Card */
+.login-card {
+    width: 100%;
+    max-width: 430px;
+
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 24px;
+
+    padding: 40px;
+
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Labels */
+.form-label {
+    font-weight: 600;
+    color: #343a40;
+}
+
+/* Input */
+.input-group-text {
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-right: 0;
+    color: #6c757d;
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-left: 0;
+    padding: 12px;
+    color: #212529;
+}
+
+.form-control::placeholder {
+    color: #8a8f98;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.65);
+    box-shadow: none;
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .form-control {
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Login Button */
+.btn-login {
+    background: #212529;
+    border: none;
+    color: white;
+
+    padding: 12px;
+
+    font-weight: 600;
+    border-radius: 10px;
+
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    color: white;
+}
+
+.login-link {
+    color: #212529;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    .login-card {
+        padding: 30px 20px;
+    }
+}

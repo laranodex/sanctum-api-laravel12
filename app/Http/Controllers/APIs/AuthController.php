@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\APIs;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\APIs\User\SignInRequest;
 use App\Http\Requests\APIs\User\SignUpRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -15,13 +16,13 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
-        User::create($data);
+        $user = User::create($data);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'User created successfully!',
-            'data' => $data,
-        ], 200);
+        return ApiResponse::success(
+            'User created successfully!',
+            $user,
+            201
+        );
     }
 
     public function signIn(SignInRequest $request)
@@ -30,40 +31,39 @@ class AuthController extends Controller
 
         if (!Auth::attempt([
             'email' => $data['email'],
-            'password' => $data['password']
+            'password' => $data['password'],
         ])) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Invalid email or password.',
-            ], 401);
-        } else {
-
-            $user = Auth::user();
-
-            $token = $user->createToken("auth_token")->plainTextToken;
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Login successful.',
-                'data' => [
-                    'user' => $user,
-                    'token' => $token,
-                    'token_type' => 'Bearer',
-                ]
-            ], 200);
+            return ApiResponse::error(
+                'Invalid email or password.',
+                null,
+                401
+            );
         }
+
+        $user = Auth::user();
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return ApiResponse::success(
+            'Login successful.',
+            [
+                'user' => $user,
+                'token' => $token,
+                'token_type' => 'Bearer',
+            ]
+        );
     }
 
     public function signOut(Request $request)
     {
         $user = $request->user();
 
-        $user->tokens("auth_token")->delete();
+        // Delete current token only
+        $user->currentAccessToken()->delete();
 
-        return response()->json([
-            'status' => true,
-            'message' => "You Sign Out Successfully!",
-            'user' => $user
-        ], 200);
+        return ApiResponse::success(
+            'You signed out successfully!',
+            null
+        );
     }
 }
